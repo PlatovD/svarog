@@ -1,39 +1,39 @@
-package io.github.PlatovD.svarog.util.config;
+package io.github.PlatovD.svarog.config.reader;
 
 import io.github.PlatovD.svarog.config.SvarogConfigKeys;
+import io.github.PlatovD.svarog.config.dto.ConfigDTO;
+import io.github.PlatovD.svarog.exception.SvarogConfigException;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
-public final class EnvPropertiesReader implements PropertiesReader {
-
-    public static final String DEFAULT_PREFIX = SvarogConfigKeys.PREFIX_ENV;
+public final class EnvReader implements ConfigReader {
 
     private final Map<String, String> env;
     private final String prefix;
 
-    public EnvPropertiesReader() {
+    public EnvReader() {
         this(System.getenv());
     }
 
-    public EnvPropertiesReader(Map<String, String> env) {
-        this(env, DEFAULT_PREFIX);
+    public EnvReader(Map<String, String> env) {
+        this(env, SvarogConfigKeys.PREFIX_ENV);
     }
 
-    public EnvPropertiesReader(Map<String, String> env, String prefix) {
+    public EnvReader(Map<String, String> env, String prefix) {
         if (env == null) {
-            throw new IllegalArgumentException("env must not be null");
+            throw new SvarogConfigException("env must not be null");
         }
         if (prefix == null) {
-            throw new IllegalArgumentException("prefix must not be null");
+            throw new SvarogConfigException("prefix must not be null");
         }
         this.env = env;
         this.prefix = prefix;
     }
 
     @Override
-    public Properties read() {
-        Properties props = new Properties();
+    public ConfigDTO read() {
+        Map<String, Object> map = new HashMap<>();
         for (Map.Entry<String, String> entry : env.entrySet()) {
             String key = entry.getKey();
             if (!key.startsWith(prefix)) {
@@ -41,9 +41,9 @@ public final class EnvPropertiesReader implements PropertiesReader {
             }
             String suffix = key.substring(prefix.length());
             String propertyKey = SvarogConfigKeys.PREFIX + toPropertyKey(suffix);
-            props.setProperty(propertyKey, entry.getValue());
+            map.put(propertyKey, entry.getValue());
         }
-        return props;
+        return new ConfigDTO(map);
     }
 
     private String toPropertyKey(String suffix) {

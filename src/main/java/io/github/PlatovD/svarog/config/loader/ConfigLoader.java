@@ -1,10 +1,10 @@
-package io.github.PlatovD.svarog.config.aggregator;
+package io.github.PlatovD.svarog.config.loader;
 
 import io.github.PlatovD.svarog.config.SvarogConfig;
 import io.github.PlatovD.svarog.config.SvarogConfigBuilder;
 
 @FunctionalInterface
-public interface ConfigAggregator {
+public interface ConfigLoader {
 
     void applyTo(SvarogConfigBuilder builder);
 
