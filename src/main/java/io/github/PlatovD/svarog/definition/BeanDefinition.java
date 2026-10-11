@@ -2,6 +2,7 @@ package io.github.PlatovD.svarog.definition;
 
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Objects;
 
 public final class BeanDefinition {
 
@@ -75,6 +76,18 @@ public final class BeanDefinition {
 
     public boolean hasBeforeDestroy() {
         return beforeDestroy != null;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        BeanDefinition that = (BeanDefinition) o;
+        return Objects.equals(type, that.type) && Objects.equals(name, that.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(type, name);
     }
 
     @Override
